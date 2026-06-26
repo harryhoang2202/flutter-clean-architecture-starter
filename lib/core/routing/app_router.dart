@@ -3,6 +3,7 @@ import 'package:flutter_clean_architecture_starter/core/routing/app_routes.dart'
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/pages/auth_page.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/projects_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +11,7 @@ import 'package:go_router/go_router.dart';
 GoRouter createAppRouter({
   required FakeSessionDataSource sessionDataSource,
   required AuthBloc Function() createAuthBloc,
+  required ProjectsBloc Function() createProjectsBloc,
   String? initialLocation,
 }) {
   return GoRouter(
@@ -34,7 +36,11 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.projects,
-        builder: (context, state) => const ProjectsPage(),
+        builder: (context, state) => BlocProvider(
+          create: (_) =>
+              createProjectsBloc()..add(const ProjectsLoadRequested()),
+          child: const ProjectsPage(),
+        ),
       ),
     ],
   );

@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/presentation/bloc/projects_bloc.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/presentation/widgets/project_list.dart';
 
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Projects')));
+    return Scaffold(
+      appBar: AppBar(title: const Text('Projects')),
+      body: BlocBuilder<ProjectsBloc, ProjectsState>(
+        builder: (context, state) {
+          return switch (state) {
+            ProjectsInitial() => const SizedBox.shrink(),
+            ProjectsLoading() => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            ProjectsEmpty() => const Center(child: Text('No Projects yet.')),
+            ProjectsLoaded(:final projects) => ProjectList(projects: projects),
+            ProjectsFailure(:final message) => Center(child: Text(message)),
+          };
+        },
+      ),
+    );
   }
 }
