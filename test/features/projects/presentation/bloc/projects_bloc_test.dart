@@ -11,7 +11,7 @@ import 'package:flutter_clean_architecture_starter/features/projects/presentatio
 
 void main() {
   blocTest<ProjectsBloc, ProjectsState>(
-    'emits loading then success when Projects are available',
+    'emits loading then loaded when Projects are available',
     build: () {
       final repository = ProjectsRepositoryImpl(
         remoteDataSource: FakeProjectsRemoteDataSource(
@@ -62,7 +62,7 @@ void main() {
   );
 
   blocTest<ProjectsBloc, ProjectsState>(
-    'adds a created Project to the visible list',
+    'updates list after create',
     build: () => _buildBloc(
       ProjectsRepositoryImpl(
         remoteDataSource: FakeProjectsRemoteDataSource(projects: []),
@@ -78,7 +78,7 @@ void main() {
   );
 
   blocTest<ProjectsBloc, ProjectsState>(
-    'updates a visible Project',
+    'updates list after update',
     build: () => _buildBloc(
       ProjectsRepositoryImpl(
         remoteDataSource: FakeProjectsRemoteDataSource(
@@ -103,7 +103,7 @@ void main() {
   );
 
   blocTest<ProjectsBloc, ProjectsState>(
-    'deletes a visible Project',
+    'updates list after delete',
     build: () => _buildBloc(
       ProjectsRepositoryImpl(
         remoteDataSource: FakeProjectsRemoteDataSource(

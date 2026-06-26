@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_clean_architecture_starter/app/app.dart';
+import 'package:flutter_clean_architecture_starter/app/di/app_dependencies.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_environment.dart';
-import 'package:flutter_clean_architecture_starter/core/di/app_dependencies.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/domain/entities/session.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/datasources/fake_projects_remote_data_source.dart';

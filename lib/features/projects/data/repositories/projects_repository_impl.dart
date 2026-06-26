@@ -1,5 +1,5 @@
-import 'package:flutter_clean_architecture_starter/core/error/failure.dart';
 import 'package:flutter_clean_architecture_starter/core/error/remote_exception.dart';
+import 'package:flutter_clean_architecture_starter/core/error/remote_failure_mapper.dart';
 import 'package:flutter_clean_architecture_starter/core/result/result.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/datasources/fake_projects_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/domain/entities/project.dart';
@@ -19,7 +19,7 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
         projects.map((project) => project.toDomain()).toList(),
       );
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -29,7 +29,7 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
       final project = await _remoteDataSource.createProject(name: name);
       return Result.success(project.toDomain());
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -45,7 +45,7 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
       );
       return Result.success(project.toDomain());
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -55,7 +55,7 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
       await _remoteDataSource.deleteProject(projectId: projectId);
       return const Result.success(null);
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 }

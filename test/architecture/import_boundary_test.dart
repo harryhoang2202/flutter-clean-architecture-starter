@@ -58,7 +58,7 @@ void main() {
         final violations = <String>[];
 
         for (final file in _dartFilesUnder('lib')) {
-          if (file.path.normalized.startsWith('lib/core/di/')) {
+          if (file.path.normalized.startsWith('lib/app/di/')) {
             continue;
           }
 
@@ -73,16 +73,40 @@ void main() {
         expect(
           violations,
           isEmpty,
-          reason:
-              'Service locator and injectable usage belongs in lib/core/di.',
+          reason: 'Service locator and injectable usage belongs in lib/app/di.',
         );
       },
     );
 
+    test('core runtime modules do not import feature presentation', () {
+      final violations = <String>[];
+
+      for (final file in _dartFilesUnder('lib/core')) {
+        for (final import in _importsIn(file)) {
+          if (import.contains('/features/') &&
+              import.contains('/presentation/')) {
+            violations.add('${file.path}: $import');
+          }
+        }
+      }
+
+      expect(
+        violations,
+        isEmpty,
+        reason:
+            'Core runtime modules must not know about feature presentation. '
+            'Feature UI wiring belongs in app routing or dependency '
+            'composition.',
+      );
+    });
+
     test('routing does not import feature data implementations', () {
       final violations = <String>[];
 
-      for (final file in _dartFilesUnder('lib/core/routing')) {
+      for (final file in _dartFilesUnderAny([
+        'lib/app/routing',
+        'lib/core/routing',
+      ])) {
         for (final import in _importsIn(file)) {
           if (import.contains('/features/') && import.contains('/data/')) {
             violations.add('${file.path}: $import');
@@ -99,6 +123,12 @@ void main() {
       );
     });
   });
+}
+
+Iterable<File> _dartFilesUnderAny(Iterable<String> paths) sync* {
+  for (final path in paths) {
+    yield* _dartFilesUnder(path);
+  }
 }
 
 Iterable<File> _dartFilesUnder(String path) {

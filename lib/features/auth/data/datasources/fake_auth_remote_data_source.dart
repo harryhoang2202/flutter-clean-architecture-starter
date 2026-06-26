@@ -12,6 +12,6 @@ class FakeAuthRemoteDataSource {
       return const Session(userId: 'demo-user');
     }
 
-    throw const RemoteException(message: 'Authentication failed.');
+    throw const RemoteException.unauthorized(message: 'Authentication failed.');
   }
 }

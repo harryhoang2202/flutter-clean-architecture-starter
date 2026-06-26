@@ -1,5 +1,5 @@
-import 'package:flutter_clean_architecture_starter/core/error/failure.dart';
 import 'package:flutter_clean_architecture_starter/core/error/remote_exception.dart';
+import 'package:flutter_clean_architecture_starter/core/error/remote_failure_mapper.dart';
 import 'package:flutter_clean_architecture_starter/core/result/result.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/data/datasources/fake_tasks_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/entities/task.dart';
@@ -21,7 +21,7 @@ class TasksRepositoryImpl implements TasksRepository {
       );
       return Result.success(tasks.map((task) => task.toDomain()).toList());
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -31,7 +31,7 @@ class TasksRepositoryImpl implements TasksRepository {
       final task = await _remoteDataSource.toggleTaskCompletion(taskId: taskId);
       return Result.success(task.toDomain());
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -47,7 +47,7 @@ class TasksRepositoryImpl implements TasksRepository {
       );
       return Result.success(task.toDomain());
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -63,7 +63,7 @@ class TasksRepositoryImpl implements TasksRepository {
       );
       return Result.success(task.toDomain());
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -73,7 +73,7 @@ class TasksRepositoryImpl implements TasksRepository {
       await _remoteDataSource.deleteTask(taskId: taskId);
       return const Result.success(null);
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 }

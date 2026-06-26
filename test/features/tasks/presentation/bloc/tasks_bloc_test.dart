@@ -12,7 +12,7 @@ import 'package:flutter_clean_architecture_starter/features/tasks/presentation/b
 
 void main() {
   blocTest<TasksBloc, TasksState>(
-    'emits loading then success when Project Tasks are available',
+    'loads Tasks by projectId',
     build: () => _buildBloc(FakeTasksRemoteDataSource()),
     act: (bloc) =>
         bloc.add(const TasksLoadRequested(projectId: 'reference-starter')),
@@ -57,7 +57,7 @@ void main() {
   );
 
   blocTest<TasksBloc, TasksState>(
-    'updates visible Task state when completion is toggled',
+    'toggles Task completion',
     build: () => _buildBloc(FakeTasksRemoteDataSource()),
     seed: () => const TasksState.loaded(
       tasks: [
@@ -154,7 +154,7 @@ void main() {
   );
 
   blocTest<TasksBloc, TasksState>(
-    'deletes a visible Task',
+    'deletes Task and emits empty if list becomes empty',
     build: () => _buildBloc(
       FakeTasksRemoteDataSource(
         tasks: const [

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_architecture_starter/app/di/app_dependencies.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
-import 'package:flutter_clean_architecture_starter/core/di/app_dependencies.dart';
 import 'package:flutter_clean_architecture_starter/core/layout/responsive_constraints.dart';
 import 'package:flutter_clean_architecture_starter/core/theme/app_theme.dart';
 import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';

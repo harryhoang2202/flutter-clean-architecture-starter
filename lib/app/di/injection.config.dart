@@ -1,6 +1,7 @@
+import 'package:flutter_clean_architecture_starter/app/di/register_module.dart';
+import 'package:flutter_clean_architecture_starter/app/routing/app_router.dart';
+import 'package:flutter_clean_architecture_starter/app/routing/session_guard_notifier.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
-import 'package:flutter_clean_architecture_starter/core/di/register_module.dart';
-import 'package:flutter_clean_architecture_starter/core/routing/app_router.dart';
 import 'package:flutter_clean_architecture_starter/core/routing/session_guard.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_auth_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
@@ -44,7 +45,14 @@ extension GetItInjectableX on GetIt {
       sessionDataSource ?? registerModule.fakeSessionDataSource,
       dispose: (source) => source.dispose(),
     );
-    registerSingleton<SessionGuard>(this<FakeSessionDataSource>());
+    registerSingleton<SessionGuardNotifier>(
+      SessionGuardNotifier(
+        hasInitialSession: this<FakeSessionDataSource>().currentSession != null,
+        sessionChanges: this<FakeSessionDataSource>().watchSession(),
+      ),
+      dispose: (guard) => guard.dispose(),
+    );
+    registerSingleton<SessionGuard>(this<SessionGuardNotifier>());
     registerLazySingleton<FakeAuthRemoteDataSource>(
       () => registerModule.fakeAuthRemoteDataSource,
     );

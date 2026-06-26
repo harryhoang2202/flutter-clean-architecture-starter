@@ -10,7 +10,7 @@ class FakeTasksRemoteDataSource {
 
   FakeTasksRemoteDataSource.unavailable()
     : this(
-        loadException: const RemoteException(
+        loadException: const RemoteException.network(
           message: 'Tasks source is unavailable.',
         ),
       );
@@ -61,6 +61,7 @@ class FakeTasksRemoteDataSource {
     required String projectId,
     required String title,
   }) async {
+    _validateTaskTitle(title);
     final task = TaskDto(
       id: _uniqueIdFor(title),
       projectId: projectId,
@@ -75,6 +76,7 @@ class FakeTasksRemoteDataSource {
     required String taskId,
     required String title,
   }) async {
+    _validateTaskTitle(title);
     final index = _indexOf(taskId);
     final updatedTask = _tasks[index].copyWith(title: title);
     _tasks[index] = updatedTask;
@@ -88,10 +90,19 @@ class FakeTasksRemoteDataSource {
   int _indexOf(String taskId) {
     final index = _tasks.indexWhere((task) => task.id == taskId);
     if (index == -1) {
-      throw const RemoteException(message: 'Task is unavailable.');
+      throw const RemoteException.notFound(message: 'Task was not found.');
     }
 
     return index;
+  }
+
+  void _validateTaskTitle(String title) {
+    if (title.trim().isEmpty) {
+      throw const RemoteException.validation(
+        message: 'Task title is required.',
+        fieldErrors: {'title': 'Task title is required.'},
+      );
+    }
   }
 
   String _uniqueIdFor(String title) {

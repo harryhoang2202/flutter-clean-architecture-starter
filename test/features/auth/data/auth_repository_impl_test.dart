@@ -6,15 +6,18 @@ import 'package:flutter_clean_architecture_starter/features/auth/domain/entities
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('repository maps data-source exceptions into Failures', () async {
-    final repository = AuthRepositoryImpl(
-      sessionDataSource: FakeSessionDataSource.unavailable(),
-    );
+  test(
+    'repository maps unavailable Session source to NetworkFailure',
+    () async {
+      final repository = AuthRepositoryImpl(
+        sessionDataSource: FakeSessionDataSource.unavailable(),
+      );
 
-    final result = await repository.readSession();
+      final result = await repository.readSession();
 
-    expect(result, isA<FailureResult<Session?>>());
-    expect(result.failureOrNull, isA<RemoteFailure>());
-    expect(result.failureOrNull?.message, 'Session source is unavailable.');
-  });
+      expect(result, isA<FailureResult<Session?>>());
+      expect(result.failureOrNull, isA<NetworkFailure>());
+      expect(result.failureOrNull?.message, 'Session source is unavailable.');
+    },
+  );
 }

@@ -10,7 +10,7 @@ class FakeProjectsRemoteDataSource {
 
   FakeProjectsRemoteDataSource.unavailable()
     : this(
-        loadException: const RemoteException(
+        loadException: const RemoteException.network(
           message: 'Projects source is unavailable.',
         ),
       );
@@ -33,6 +33,7 @@ class FakeProjectsRemoteDataSource {
   }
 
   Future<ProjectDto> createProject({required String name}) async {
+    _validateProjectName(name);
     final project = ProjectDto(id: _uniqueIdFor(name), name: name);
     _projects.add(project);
     return project;
@@ -42,6 +43,7 @@ class FakeProjectsRemoteDataSource {
     required String projectId,
     required String name,
   }) async {
+    _validateProjectName(name);
     final index = _indexOf(projectId);
     final updatedProject = _projects[index].copyWith(name: name);
     _projects[index] = updatedProject;
@@ -55,10 +57,19 @@ class FakeProjectsRemoteDataSource {
   int _indexOf(String projectId) {
     final index = _projects.indexWhere((project) => project.id == projectId);
     if (index == -1) {
-      throw const RemoteException(message: 'Project is unavailable.');
+      throw const RemoteException.notFound(message: 'Project was not found.');
     }
 
     return index;
+  }
+
+  void _validateProjectName(String name) {
+    if (name.trim().isEmpty) {
+      throw const RemoteException.validation(
+        message: 'Project name is required.',
+        fieldErrors: {'name': 'Project name is required.'},
+      );
+    }
   }
 
   String _uniqueIdFor(String name) {

@@ -50,7 +50,7 @@ void main() {
     expect(loadResult.valueOrNull, isEmpty);
   });
 
-  test('repository maps fake remote task failure into a Failure', () async {
+  test('repository maps unavailable Tasks source to NetworkFailure', () async {
     final repository = TasksRepositoryImpl(
       remoteDataSource: FakeTasksRemoteDataSource.unavailable(),
     );
@@ -60,7 +60,40 @@ void main() {
     );
 
     expect(result, isA<FailureResult<List<Task>>>());
-    expect(result.failureOrNull, isA<RemoteFailure>());
+    expect(result.failureOrNull, isA<NetworkFailure>());
     expect(result.failureOrNull?.message, 'Tasks source is unavailable.');
+  });
+
+  test('repository maps invalid Task title to ValidationFailure', () async {
+    final repository = TasksRepositoryImpl(
+      remoteDataSource: FakeTasksRemoteDataSource(tasks: []),
+    );
+
+    final result = await repository.createTask(
+      projectId: 'reference-starter',
+      title: '',
+    );
+
+    expect(result, isA<FailureResult<Task>>());
+    final failure = result.failureOrNull;
+    expect(failure, isA<ValidationFailure>());
+    expect(failure?.message, 'Task title is required.');
+    expect((failure as ValidationFailure).fieldErrors, {
+      'title': 'Task title is required.',
+    });
+  });
+
+  test('repository maps missing Task to NotFoundFailure', () async {
+    final repository = TasksRepositoryImpl(
+      remoteDataSource: FakeTasksRemoteDataSource(tasks: []),
+    );
+
+    final result = await repository.toggleTaskCompletion(
+      taskId: 'missing-task',
+    );
+
+    expect(result, isA<FailureResult<Task>>());
+    expect(result.failureOrNull, isA<NotFoundFailure>());
+    expect(result.failureOrNull?.message, 'Task was not found.');
   });
 }

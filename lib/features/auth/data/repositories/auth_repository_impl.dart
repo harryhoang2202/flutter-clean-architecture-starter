@@ -1,5 +1,5 @@
-import 'package:flutter_clean_architecture_starter/core/error/failure.dart';
 import 'package:flutter_clean_architecture_starter/core/error/remote_exception.dart';
+import 'package:flutter_clean_architecture_starter/core/error/remote_failure_mapper.dart';
 import 'package:flutter_clean_architecture_starter/core/result/result.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_auth_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
@@ -22,7 +22,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       return Result.success(await _sessionDataSource.readSession());
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 
@@ -44,7 +44,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _sessionDataSource.saveSession(session);
       return Result.success(session);
     } on RemoteException catch (error) {
-      return Result.failure(RemoteFailure(message: error.message));
+      return Result.failure(failureFromRemoteException(error));
     }
   }
 

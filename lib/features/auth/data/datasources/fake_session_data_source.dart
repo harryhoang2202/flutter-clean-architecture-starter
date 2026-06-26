@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_clean_architecture_starter/core/error/remote_exception.dart';
-import 'package:flutter_clean_architecture_starter/core/routing/session_guard.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/domain/entities/session.dart';
 
-class FakeSessionDataSource extends ChangeNotifier implements SessionGuard {
+class FakeSessionDataSource {
   FakeSessionDataSource({
     Session? initialSession,
     RemoteException? readException,
@@ -15,7 +13,7 @@ class FakeSessionDataSource extends ChangeNotifier implements SessionGuard {
   FakeSessionDataSource.unauthenticated() : this();
   FakeSessionDataSource.unavailable()
     : this(
-        readException: const RemoteException(
+        readException: const RemoteException.network(
           message: 'Session source is unavailable.',
         ),
       );
@@ -26,9 +24,6 @@ class FakeSessionDataSource extends ChangeNotifier implements SessionGuard {
       StreamController<Session?>.broadcast();
 
   Session? get currentSession => _currentSession;
-
-  @override
-  bool get hasSession => _currentSession != null;
 
   Future<Session?> readSession() async {
     final readException = _readException;
@@ -47,18 +42,14 @@ class FakeSessionDataSource extends ChangeNotifier implements SessionGuard {
   Future<void> saveSession(Session session) async {
     _currentSession = session;
     _sessionController.add(_currentSession);
-    notifyListeners();
   }
 
   Future<void> clearSession() async {
     _currentSession = null;
     _sessionController.add(_currentSession);
-    notifyListeners();
   }
 
-  @override
   void dispose() {
     _sessionController.close();
-    super.dispose();
   }
 }

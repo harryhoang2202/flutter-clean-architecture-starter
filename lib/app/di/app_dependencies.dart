@@ -1,5 +1,5 @@
+import 'package:flutter_clean_architecture_starter/app/di/injection.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
-import 'package:flutter_clean_architecture_starter/core/di/injection.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';

@@ -24,20 +24,26 @@ void main() {
     expect((await repository.readSession()).valueOrNull?.userId, 'demo-user');
   });
 
-  test('signing in with rejected credentials returns a Failure', () async {
-    final repository = AuthRepositoryImpl(
-      authRemoteDataSource: FakeAuthRemoteDataSource(),
-      sessionDataSource: FakeSessionDataSource.unauthenticated(),
-    );
-    final signIn = SignIn(repository);
+  test(
+    'signing in with rejected credentials returns UnauthorizedFailure',
+    () async {
+      final repository = AuthRepositoryImpl(
+        authRemoteDataSource: FakeAuthRemoteDataSource(),
+        sessionDataSource: FakeSessionDataSource.unauthenticated(),
+      );
+      final signIn = SignIn(repository);
 
-    final result = await signIn(
-      const SignInParams(email: 'demo@example.com', password: 'wrong-password'),
-    );
+      final result = await signIn(
+        const SignInParams(
+          email: 'demo@example.com',
+          password: 'wrong-password',
+        ),
+      );
 
-    expect(result, isA<FailureResult<Session>>());
-    expect(result.failureOrNull, isA<RemoteFailure>());
-    expect(result.failureOrNull?.message, 'Authentication failed.');
-    expect((await repository.readSession()).valueOrNull, isNull);
-  });
+      expect(result, isA<FailureResult<Session>>());
+      expect(result.failureOrNull, isA<UnauthorizedFailure>());
+      expect(result.failureOrNull?.message, 'Authentication failed.');
+      expect((await repository.readSession()).valueOrNull, isNull);
+    },
+  );
 }

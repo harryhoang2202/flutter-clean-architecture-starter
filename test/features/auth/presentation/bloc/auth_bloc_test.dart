@@ -7,7 +7,7 @@ import 'package:flutter_clean_architecture_starter/features/auth/presentation/bl
 
 void main() {
   blocTest<AuthBloc, AuthState>(
-    'emits loading then success when sign-in succeeds',
+    'emits loading then authenticated when sign in succeeds',
     build: () {
       final repository = AuthRepositoryImpl(
         authRemoteDataSource: FakeAuthRemoteDataSource(),
@@ -29,7 +29,7 @@ void main() {
   );
 
   blocTest<AuthBloc, AuthState>(
-    'emits loading then failure when sign-in fails',
+    'emits loading then failure when credentials are invalid',
     build: () {
       final repository = AuthRepositoryImpl(
         authRemoteDataSource: FakeAuthRemoteDataSource(),
