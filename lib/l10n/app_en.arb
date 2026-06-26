@@ -8,6 +8,46 @@
   "@referenceStarterSubtitle": {
     "description": "Short subtitle for the starter shell."
   },
+  "authenticationTitle": "Authentication",
+  "@authenticationTitle": {
+    "description": "Title for the Authentication page."
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label for the Authentication email field."
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label for the Authentication password field."
+  },
+  "signInAction": "Sign in",
+  "@signInAction": {
+    "description": "Button label for signing in."
+  },
+  "signOutAction": "Sign out",
+  "@signOutAction": {
+    "description": "Button label for signing out."
+  },
+  "projectsTitle": "Projects",
+  "@projectsTitle": {
+    "description": "Title for the Projects page."
+  },
+  "noProjectsMessage": "No Projects yet.",
+  "@noProjectsMessage": {
+    "description": "Message shown when there are no Projects."
+  },
+  "noTasksMessage": "No Tasks yet.",
+  "@noTasksMessage": {
+    "description": "Message shown when a Project has no Tasks."
+  },
+  "referenceStarterProjectTitle": "Reference Starter",
+  "@referenceStarterProjectTitle": {
+    "description": "Display title for the Reference Starter Project."
+  },
+  "architectureCleanupProjectTitle": "Architecture Cleanup",
+  "@architectureCleanupProjectTitle": {
+    "description": "Display title for the Architecture Cleanup Project."
+  },
   "sliceZeroStatus": "Slice 0 is running in {environment} mode.",
   "@sliceZeroStatus": {
     "description": "Status text shown by the starter shell before feature slices are implemented.",

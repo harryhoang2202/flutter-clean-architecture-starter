@@ -106,6 +106,66 @@ abstract class AppLocalizations {
   /// **'Project Management Reference Starter'**
   String get referenceStarterSubtitle;
 
+  /// Title for the Authentication page.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get authenticationTitle;
+
+  /// Label for the Authentication email field.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// Label for the Authentication password field.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// Button label for signing in.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInAction;
+
+  /// Button label for signing out.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOutAction;
+
+  /// Title for the Projects page.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get projectsTitle;
+
+  /// Message shown when there are no Projects.
+  ///
+  /// In en, this message translates to:
+  /// **'No Projects yet.'**
+  String get noProjectsMessage;
+
+  /// Message shown when a Project has no Tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'No Tasks yet.'**
+  String get noTasksMessage;
+
+  /// Display title for the Reference Starter Project.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference Starter'**
+  String get referenceStarterProjectTitle;
+
+  /// Display title for the Architecture Cleanup Project.
+  ///
+  /// In en, this message translates to:
+  /// **'Architecture Cleanup'**
+  String get architectureCleanupProjectTitle;
+
   /// Status text shown by the starter shell before feature slices are implemented.
   ///
   /// In en, this message translates to:

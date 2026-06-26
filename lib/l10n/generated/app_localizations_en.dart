@@ -15,6 +15,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get referenceStarterSubtitle => 'Project Management Reference Starter';
 
   @override
+  String get authenticationTitle => 'Authentication';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get signInAction => 'Sign in';
+
+  @override
+  String get signOutAction => 'Sign out';
+
+  @override
+  String get projectsTitle => 'Projects';
+
+  @override
+  String get noProjectsMessage => 'No Projects yet.';
+
+  @override
+  String get noTasksMessage => 'No Tasks yet.';
+
+  @override
+  String get referenceStarterProjectTitle => 'Reference Starter';
+
+  @override
+  String get architectureCleanupProjectTitle => 'Architecture Cleanup';
+
+  @override
   String sliceZeroStatus(String environment) {
     return 'Slice 0 is running in $environment mode.';
   }

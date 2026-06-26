@@ -10,6 +10,7 @@ import 'package:flutter_clean_architecture_starter/features/projects/data/reposi
 import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/load_projects.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/projects_page.dart';
+import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -41,7 +42,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
+      _LocalizedTestApp(
         home: BlocProvider(
           create: (_) =>
               ProjectsBloc(loadProjects: LoadProjects(repository))
@@ -65,7 +66,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
+      _LocalizedTestApp(
         home: BlocProvider(
           create: (_) =>
               ProjectsBloc(loadProjects: LoadProjects(repository))
@@ -79,4 +80,19 @@ void main() {
 
     expect(find.text('Projects source is unavailable.'), findsOneWidget);
   });
+}
+
+class _LocalizedTestApp extends StatelessWidget {
+  const _LocalizedTestApp({required this.home});
+
+  final Widget home;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: home,
+    );
+  }
 }

@@ -9,6 +9,7 @@ import 'package:flutter_clean_architecture_starter/features/auth/domain/use_case
 import 'package:flutter_clean_architecture_starter/features/auth/domain/use_cases/sign_out.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/domain/use_cases/watch_session.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_clean_architecture_starter/features/auth/presentation/bloc/sign_out_cubit.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/datasources/fake_projects_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/repositories/projects_repository_impl.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/domain/repositories/projects_repository.dart';
@@ -55,6 +56,7 @@ extension GetItInjectableX on GetIt {
     registerFactory<SignOut>(() => SignOut(this<AuthRepository>()));
     registerFactory<WatchSession>(() => WatchSession(this<AuthRepository>()));
     registerFactory<AuthBloc>(() => AuthBloc(signIn: this<SignIn>()));
+    registerFactory<SignOutCubit>(() => SignOutCubit(signOut: this<SignOut>()));
     registerLazySingleton<ProjectsRepository>(
       () => ProjectsRepositoryImpl(
         remoteDataSource: this<FakeProjectsRemoteDataSource>(),
@@ -87,6 +89,7 @@ extension GetItInjectableX on GetIt {
       () => createAppRouter(
         sessionDataSource: this<FakeSessionDataSource>(),
         createAuthBloc: () => this<AuthBloc>(),
+        createSignOutCubit: () => this<SignOutCubit>(),
         createProjectsBloc: () => this<ProjectsBloc>(),
         createTasksBloc: () => this<TasksBloc>(),
         initialLocation: initialLocation,

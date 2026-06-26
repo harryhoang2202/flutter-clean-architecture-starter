@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
 import 'package:flutter_clean_architecture_starter/core/di/injection.dart';
+import 'package:flutter_clean_architecture_starter/core/layout/responsive_constraints.dart';
+import 'package:flutter_clean_architecture_starter/core/theme/app_theme.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
@@ -78,10 +80,7 @@ class _StarterAppState extends State<StarterApp> {
       debugShowCheckedModeBanner: config.isDev,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light(),
       routerConfig: _router,
     );
   }
@@ -98,30 +97,26 @@ class StarterHomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(strings.appTitle)),
-      body: SafeArea(
+      body: ResponsiveConstraints(
+        maxWidth: 520,
+        padding: const EdgeInsets.all(24),
         child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    strings.appTitle,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    strings.referenceStarterSubtitle,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 24),
-                  Text(strings.sliceZeroStatus(config.environment.label)),
-                ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                strings.appTitle,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
-            ),
+              const SizedBox(height: 12),
+              Text(
+                strings.referenceStarterSubtitle,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 24),
+              Text(strings.sliceZeroStatus(config.environment.label)),
+            ],
           ),
         ),
       ),

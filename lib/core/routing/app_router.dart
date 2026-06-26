@@ -2,9 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture_starter/core/routing/app_routes.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_clean_architecture_starter/features/auth/presentation/bloc/sign_out_cubit.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/pages/auth_page.dart';
-import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/project_detail_page.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/bloc/projects_bloc.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/project_detail_page.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/projects_page.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/presentation/bloc/tasks_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:go_router/go_router.dart';
 GoRouter createAppRouter({
   required FakeSessionDataSource sessionDataSource,
   required AuthBloc Function() createAuthBloc,
+  required SignOutCubit Function() createSignOutCubit,
   required ProjectsBloc Function() createProjectsBloc,
   required TasksBloc Function() createTasksBloc,
   String? initialLocation,
@@ -50,10 +52,15 @@ GoRouter createAppRouter({
         builder: (context, state) {
           final projectId = state.pathParameters['projectId']!;
 
-          return BlocProvider(
-            create: (_) =>
-                createTasksBloc()
-                  ..add(TasksLoadRequested(projectId: projectId)),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => createSignOutCubit()),
+              BlocProvider(
+                create: (_) =>
+                    createTasksBloc()
+                      ..add(TasksLoadRequested(projectId: projectId)),
+              ),
+            ],
             child: ProjectDetailPage(projectId: projectId),
           );
         },

@@ -11,6 +11,7 @@ import 'package:flutter_clean_architecture_starter/features/tasks/data/repositor
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/load_project_tasks.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/toggle_task_completion.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/presentation/bloc/tasks_bloc.dart';
+import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -43,7 +44,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
+      _LocalizedTestApp(
         home: BlocProvider(
           create: (_) => TasksBloc(
             loadProjectTasks: LoadProjectTasks(repository),
@@ -69,7 +70,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
+      _LocalizedTestApp(
         home: BlocProvider(
           create: (_) => TasksBloc(
             loadProjectTasks: LoadProjectTasks(repository),
@@ -94,7 +95,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
+      _LocalizedTestApp(
         home: BlocProvider(
           create: (_) => TasksBloc(
             loadProjectTasks: LoadProjectTasks(repository),
@@ -121,4 +122,19 @@ void main() {
 
     expect(checkbox().value, isTrue);
   });
+}
+
+class _LocalizedTestApp extends StatelessWidget {
+  const _LocalizedTestApp({required this.home});
+
+  final Widget home;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: home,
+    );
+  }
 }
