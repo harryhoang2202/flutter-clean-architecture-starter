@@ -78,6 +78,26 @@ void main() {
         );
       },
     );
+
+    test('routing does not import feature data implementations', () {
+      final violations = <String>[];
+
+      for (final file in _dartFilesUnder('lib/core/routing')) {
+        for (final import in _importsIn(file)) {
+          if (import.contains('/features/') && import.contains('/data/')) {
+            violations.add('${file.path}: $import');
+          }
+        }
+      }
+
+      expect(
+        violations,
+        isEmpty,
+        reason:
+            'Routing may depend on route contracts and presentation builders, '
+            'but not concrete feature data implementations.',
+      );
+    });
   });
 }
 

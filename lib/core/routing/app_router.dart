@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_clean_architecture_starter/core/routing/app_routes.dart';
-import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
+import 'package:flutter_clean_architecture_starter/core/routing/session_guard.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/bloc/sign_out_cubit.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/presentation/pages/auth_page.dart';
@@ -8,11 +9,10 @@ import 'package:flutter_clean_architecture_starter/features/projects/presentatio
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/project_detail_page.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/projects_page.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/presentation/bloc/tasks_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 GoRouter createAppRouter({
-  required FakeSessionDataSource sessionDataSource,
+  required SessionGuard sessionGuard,
   required AuthBloc Function() createAuthBloc,
   required SignOutCubit Function() createSignOutCubit,
   required ProjectsBloc Function() createProjectsBloc,
@@ -21,11 +21,11 @@ GoRouter createAppRouter({
 }) {
   return GoRouter(
     initialLocation: initialLocation ?? AppRoutes.projects,
-    refreshListenable: sessionDataSource,
+    refreshListenable: sessionGuard,
     redirect: (BuildContext context, GoRouterState state) {
       final isGoingToProjects = state.uri.path.startsWith(AppRoutes.projects);
 
-      if (isGoingToProjects && !sessionDataSource.hasSession) {
+      if (isGoingToProjects && !sessionGuard.hasSession) {
         return AppRoutes.authentication;
       }
 

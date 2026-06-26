@@ -28,13 +28,53 @@
   "@signOutAction": {
     "description": "Button label for signing out."
   },
+  "cancelAction": "Cancel",
+  "@cancelAction": {
+    "description": "Button label for cancelling a dialog."
+  },
+  "saveAction": "Save",
+  "@saveAction": {
+    "description": "Button label for saving a dialog."
+  },
+  "editAction": "Edit",
+  "@editAction": {
+    "description": "Menu label for editing an item."
+  },
+  "deleteAction": "Delete",
+  "@deleteAction": {
+    "description": "Menu label for deleting an item."
+  },
   "projectsTitle": "Projects",
   "@projectsTitle": {
     "description": "Title for the Projects page."
   },
+  "createProjectTitle": "Create Project",
+  "@createProjectTitle": {
+    "description": "Title for the create Project dialog."
+  },
+  "updateProjectTitle": "Update Project",
+  "@updateProjectTitle": {
+    "description": "Title for the update Project dialog."
+  },
+  "projectNameLabel": "Project name",
+  "@projectNameLabel": {
+    "description": "Label for the Project name field."
+  },
   "noProjectsMessage": "No Projects yet.",
   "@noProjectsMessage": {
     "description": "Message shown when there are no Projects."
+  },
+  "createTaskTitle": "Create Task",
+  "@createTaskTitle": {
+    "description": "Title for the create Task dialog."
+  },
+  "updateTaskTitle": "Update Task",
+  "@updateTaskTitle": {
+    "description": "Title for the update Task dialog."
+  },
+  "taskTitleLabel": "Task title",
+  "@taskTitleLabel": {
+    "description": "Label for the Task title field."
   },
   "noTasksMessage": "No Tasks yet.",
   "@noTasksMessage": {

@@ -9,8 +9,11 @@ import 'package:flutter_clean_architecture_starter/features/auth/domain/entities
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/project_detail_page.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/data/datasources/fake_tasks_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/data/repositories/tasks_repository_impl.dart';
+import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/create_task.dart';
+import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/delete_task.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/load_project_tasks.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/toggle_task_completion.dart';
+import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/update_task.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/presentation/bloc/tasks_bloc.dart';
 import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,6 +55,9 @@ void main() {
           create: (_) => TasksBloc(
             loadProjectTasks: LoadProjectTasks(repository),
             toggleTaskCompletion: ToggleTaskCompletion(repository),
+            createTask: CreateTask(repository),
+            updateTask: UpdateTask(repository),
+            deleteTask: DeleteTask(repository),
           )..add(const TasksLoadRequested(projectId: projectId)),
           child: const ProjectDetailPage(projectId: projectId),
         ),
@@ -78,6 +84,9 @@ void main() {
           create: (_) => TasksBloc(
             loadProjectTasks: LoadProjectTasks(repository),
             toggleTaskCompletion: ToggleTaskCompletion(repository),
+            createTask: CreateTask(repository),
+            updateTask: UpdateTask(repository),
+            deleteTask: DeleteTask(repository),
           )..add(const TasksLoadRequested(projectId: projectId)),
           child: const ProjectDetailPage(projectId: projectId),
         ),
@@ -103,6 +112,9 @@ void main() {
           create: (_) => TasksBloc(
             loadProjectTasks: LoadProjectTasks(repository),
             toggleTaskCompletion: ToggleTaskCompletion(repository),
+            createTask: CreateTask(repository),
+            updateTask: UpdateTask(repository),
+            deleteTask: DeleteTask(repository),
           )..add(const TasksLoadRequested(projectId: projectId)),
           child: const ProjectDetailPage(projectId: projectId),
         ),
@@ -124,6 +136,40 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(checkbox().value, isTrue);
+  });
+
+  testWidgets('user can create a Task', (tester) async {
+    const projectId = 'reference-starter';
+    final repository = TasksRepositoryImpl(
+      remoteDataSource: FakeTasksRemoteDataSource(tasks: []),
+    );
+
+    await tester.pumpWidget(
+      _LocalizedTestApp(
+        home: BlocProvider(
+          create: (_) => TasksBloc(
+            loadProjectTasks: LoadProjectTasks(repository),
+            toggleTaskCompletion: ToggleTaskCompletion(repository),
+            createTask: CreateTask(repository),
+            updateTask: UpdateTask(repository),
+            deleteTask: DeleteTask(repository),
+          )..add(const TasksLoadRequested(projectId: projectId)),
+          child: const ProjectDetailPage(projectId: projectId),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('create-task-action')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('task-title-field')),
+      'Write CRUD Tests',
+    );
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Write CRUD Tests'), findsOneWidget);
   });
 }
 

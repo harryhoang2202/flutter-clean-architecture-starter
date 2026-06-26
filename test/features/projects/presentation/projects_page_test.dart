@@ -8,7 +8,10 @@ import 'package:flutter_clean_architecture_starter/features/auth/data/datasource
 import 'package:flutter_clean_architecture_starter/features/auth/domain/entities/session.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/datasources/fake_projects_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/repositories/projects_repository_impl.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/create_project.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/delete_project.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/load_projects.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/update_project.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/pages/projects_page.dart';
 import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
@@ -48,8 +51,7 @@ void main() {
       _LocalizedTestApp(
         home: BlocProvider(
           create: (_) =>
-              ProjectsBloc(loadProjects: LoadProjects(repository))
-                ..add(const ProjectsLoadRequested()),
+              _buildBloc(repository)..add(const ProjectsLoadRequested()),
           child: const ProjectsPage(),
         ),
       ),
@@ -72,8 +74,7 @@ void main() {
       _LocalizedTestApp(
         home: BlocProvider(
           create: (_) =>
-              ProjectsBloc(loadProjects: LoadProjects(repository))
-                ..add(const ProjectsLoadRequested()),
+              _buildBloc(repository)..add(const ProjectsLoadRequested()),
           child: const ProjectsPage(),
         ),
       ),
@@ -83,6 +84,43 @@ void main() {
 
     expect(find.text('Projects source is unavailable.'), findsOneWidget);
   });
+
+  testWidgets('user can create a Project', (tester) async {
+    final repository = ProjectsRepositoryImpl(
+      remoteDataSource: FakeProjectsRemoteDataSource(projects: []),
+    );
+
+    await tester.pumpWidget(
+      _LocalizedTestApp(
+        home: BlocProvider(
+          create: (_) =>
+              _buildBloc(repository)..add(const ProjectsLoadRequested()),
+          child: const ProjectsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('create-project-action')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('project-name-field')),
+      'Mobile App',
+    );
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mobile App'), findsOneWidget);
+  });
+}
+
+ProjectsBloc _buildBloc(ProjectsRepositoryImpl repository) {
+  return ProjectsBloc(
+    loadProjects: LoadProjects(repository),
+    createProject: CreateProject(repository),
+    updateProject: UpdateProject(repository),
+    deleteProject: DeleteProject(repository),
+  );
 }
 
 class _LocalizedTestApp extends StatelessWidget {

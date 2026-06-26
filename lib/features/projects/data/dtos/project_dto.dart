@@ -6,6 +6,10 @@ class ProjectDto {
   final String id;
   final String name;
 
+  ProjectDto copyWith({String? name}) {
+    return ProjectDto(id: id, name: name ?? this.name);
+  }
+
   Project toDomain() {
     return Project(id: id, name: name);
   }

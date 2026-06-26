@@ -6,6 +6,10 @@ class Project extends Equatable {
   final String id;
   final String name;
 
+  Project copyWith({String? name}) {
+    return Project(id: id, name: name ?? this.name);
+  }
+
   @override
   List<Object> get props => [id, name];
 }

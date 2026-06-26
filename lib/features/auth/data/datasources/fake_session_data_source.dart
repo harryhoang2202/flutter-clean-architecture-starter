@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_clean_architecture_starter/core/error/remote_exception.dart';
+import 'package:flutter_clean_architecture_starter/core/routing/session_guard.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/domain/entities/session.dart';
 
-class FakeSessionDataSource extends ChangeNotifier {
+class FakeSessionDataSource extends ChangeNotifier implements SessionGuard {
   FakeSessionDataSource({
     Session? initialSession,
     RemoteException? readException,
@@ -26,6 +27,7 @@ class FakeSessionDataSource extends ChangeNotifier {
 
   Session? get currentSession => _currentSession;
 
+  @override
   bool get hasSession => _currentSession != null;
 
   Future<Session?> readSession() async {

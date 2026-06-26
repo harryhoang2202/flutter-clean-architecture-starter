@@ -13,11 +13,11 @@ class Task extends Equatable {
   final String title;
   final bool isCompleted;
 
-  Task copyWith({bool? isCompleted}) {
+  Task copyWith({String? title, bool? isCompleted}) {
     return Task(
       id: id,
       projectId: projectId,
-      title: title,
+      title: title ?? this.title,
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }

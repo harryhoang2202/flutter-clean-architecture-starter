@@ -1,6 +1,7 @@
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
 import 'package:flutter_clean_architecture_starter/core/di/register_module.dart';
 import 'package:flutter_clean_architecture_starter/core/routing/app_router.dart';
+import 'package:flutter_clean_architecture_starter/core/routing/session_guard.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_auth_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/repositories/auth_repository_impl.dart';
@@ -13,13 +14,19 @@ import 'package:flutter_clean_architecture_starter/features/auth/presentation/bl
 import 'package:flutter_clean_architecture_starter/features/projects/data/datasources/fake_projects_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/repositories/projects_repository_impl.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/domain/repositories/projects_repository.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/create_project.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/delete_project.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/load_projects.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/update_project.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/data/datasources/fake_tasks_remote_data_source.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/data/repositories/tasks_repository_impl.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/repositories/tasks_repository.dart';
+import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/create_task.dart';
+import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/delete_task.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/load_project_tasks.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/toggle_task_completion.dart';
+import 'package:flutter_clean_architecture_starter/features/tasks/domain/use_cases/update_task.dart';
 import 'package:flutter_clean_architecture_starter/features/tasks/presentation/bloc/tasks_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -37,6 +44,7 @@ extension GetItInjectableX on GetIt {
       sessionDataSource ?? registerModule.fakeSessionDataSource,
       dispose: (source) => source.dispose(),
     );
+    registerSingleton<SessionGuard>(this<FakeSessionDataSource>());
     registerLazySingleton<FakeAuthRemoteDataSource>(
       () => registerModule.fakeAuthRemoteDataSource,
     );
@@ -65,8 +73,22 @@ extension GetItInjectableX on GetIt {
     registerFactory<LoadProjects>(
       () => LoadProjects(this<ProjectsRepository>()),
     );
+    registerFactory<CreateProject>(
+      () => CreateProject(this<ProjectsRepository>()),
+    );
+    registerFactory<UpdateProject>(
+      () => UpdateProject(this<ProjectsRepository>()),
+    );
+    registerFactory<DeleteProject>(
+      () => DeleteProject(this<ProjectsRepository>()),
+    );
     registerFactory<ProjectsBloc>(
-      () => ProjectsBloc(loadProjects: this<LoadProjects>()),
+      () => ProjectsBloc(
+        loadProjects: this<LoadProjects>(),
+        createProject: this<CreateProject>(),
+        updateProject: this<UpdateProject>(),
+        deleteProject: this<DeleteProject>(),
+      ),
     );
     registerLazySingleton<TasksRepository>(
       () => TasksRepositoryImpl(
@@ -79,15 +101,21 @@ extension GetItInjectableX on GetIt {
     registerFactory<ToggleTaskCompletion>(
       () => ToggleTaskCompletion(this<TasksRepository>()),
     );
+    registerFactory<CreateTask>(() => CreateTask(this<TasksRepository>()));
+    registerFactory<UpdateTask>(() => UpdateTask(this<TasksRepository>()));
+    registerFactory<DeleteTask>(() => DeleteTask(this<TasksRepository>()));
     registerFactory<TasksBloc>(
       () => TasksBloc(
         loadProjectTasks: this<LoadProjectTasks>(),
         toggleTaskCompletion: this<ToggleTaskCompletion>(),
+        createTask: this<CreateTask>(),
+        updateTask: this<UpdateTask>(),
+        deleteTask: this<DeleteTask>(),
       ),
     );
     registerLazySingleton<GoRouter>(
       () => createAppRouter(
-        sessionDataSource: this<FakeSessionDataSource>(),
+        sessionGuard: this<SessionGuard>(),
         createAuthBloc: () => this<AuthBloc>(),
         createSignOutCubit: () => this<SignOutCubit>(),
         createProjectsBloc: () => this<ProjectsBloc>(),

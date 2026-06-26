@@ -30,6 +30,30 @@ The app ships with a fake API and a complete demo path:
 
 ## Architecture
 
+```mermaid
+flowchart TB
+  App[App Shell] --> Router[core/routing]
+  App --> DI[core/di]
+  Router --> Presentation[Feature Presentation]
+  DI --> Presentation
+  DI --> Domain[Feature Domain]
+  DI --> Data[Feature Data]
+  Presentation --> Domain
+  Data --> Domain
+  Data --> Core[core/result + core/error]
+  Domain --> Core
+
+  subgraph Features
+    Presentation --> Bloc[BLoC + Pages + Widgets]
+    Domain --> UseCases[Use Cases]
+    Domain --> Repositories[Repository Contracts]
+    Domain --> Entities[Entities]
+    Data --> Implementations[Repository Implementations]
+    Data --> Sources[Fake Remote Data Sources]
+    Data --> Dtos[DTOs]
+  end
+```
+
 The code is organized feature-first:
 
 ```text

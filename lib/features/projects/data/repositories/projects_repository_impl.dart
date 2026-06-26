@@ -6,10 +6,8 @@ import 'package:flutter_clean_architecture_starter/features/projects/domain/enti
 import 'package:flutter_clean_architecture_starter/features/projects/domain/repositories/projects_repository.dart';
 
 class ProjectsRepositoryImpl implements ProjectsRepository {
-  const ProjectsRepositoryImpl({
-    FakeProjectsRemoteDataSource remoteDataSource =
-        const FakeProjectsRemoteDataSource(),
-  }) : _remoteDataSource = remoteDataSource;
+  ProjectsRepositoryImpl({FakeProjectsRemoteDataSource? remoteDataSource})
+    : _remoteDataSource = remoteDataSource ?? FakeProjectsRemoteDataSource();
 
   final FakeProjectsRemoteDataSource _remoteDataSource;
 
@@ -20,6 +18,42 @@ class ProjectsRepositoryImpl implements ProjectsRepository {
       return Result.success(
         projects.map((project) => project.toDomain()).toList(),
       );
+    } on RemoteException catch (error) {
+      return Result.failure(RemoteFailure(message: error.message));
+    }
+  }
+
+  @override
+  Future<Result<Project>> createProject({required String name}) async {
+    try {
+      final project = await _remoteDataSource.createProject(name: name);
+      return Result.success(project.toDomain());
+    } on RemoteException catch (error) {
+      return Result.failure(RemoteFailure(message: error.message));
+    }
+  }
+
+  @override
+  Future<Result<Project>> updateProject({
+    required String projectId,
+    required String name,
+  }) async {
+    try {
+      final project = await _remoteDataSource.updateProject(
+        projectId: projectId,
+        name: name,
+      );
+      return Result.success(project.toDomain());
+    } on RemoteException catch (error) {
+      return Result.failure(RemoteFailure(message: error.message));
+    }
+  }
+
+  @override
+  Future<Result<void>> deleteProject({required String projectId}) async {
+    try {
+      await _remoteDataSource.deleteProject(projectId: projectId);
+      return const Result.success(null);
     } on RemoteException catch (error) {
       return Result.failure(RemoteFailure(message: error.message));
     }

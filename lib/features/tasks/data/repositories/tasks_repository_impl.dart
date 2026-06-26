@@ -34,4 +34,46 @@ class TasksRepositoryImpl implements TasksRepository {
       return Result.failure(RemoteFailure(message: error.message));
     }
   }
+
+  @override
+  Future<Result<Task>> createTask({
+    required String projectId,
+    required String title,
+  }) async {
+    try {
+      final task = await _remoteDataSource.createTask(
+        projectId: projectId,
+        title: title,
+      );
+      return Result.success(task.toDomain());
+    } on RemoteException catch (error) {
+      return Result.failure(RemoteFailure(message: error.message));
+    }
+  }
+
+  @override
+  Future<Result<Task>> updateTask({
+    required String taskId,
+    required String title,
+  }) async {
+    try {
+      final task = await _remoteDataSource.updateTask(
+        taskId: taskId,
+        title: title,
+      );
+      return Result.success(task.toDomain());
+    } on RemoteException catch (error) {
+      return Result.failure(RemoteFailure(message: error.message));
+    }
+  }
+
+  @override
+  Future<Result<void>> deleteTask({required String taskId}) async {
+    try {
+      await _remoteDataSource.deleteTask(taskId: taskId);
+      return const Result.success(null);
+    } on RemoteException catch (error) {
+      return Result.failure(RemoteFailure(message: error.message));
+    }
+  }
 }

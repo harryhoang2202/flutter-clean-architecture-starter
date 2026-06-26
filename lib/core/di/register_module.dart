@@ -13,7 +13,7 @@ class RegisterModule {
       const FakeAuthRemoteDataSource();
 
   FakeProjectsRemoteDataSource get fakeProjectsRemoteDataSource =>
-      const FakeProjectsRemoteDataSource();
+      FakeProjectsRemoteDataSource();
 
   FakeTasksRemoteDataSource get fakeTasksRemoteDataSource =>
       FakeTasksRemoteDataSource();

@@ -13,11 +13,11 @@ class TaskDto {
   final String title;
   final bool isCompleted;
 
-  TaskDto copyWith({bool? isCompleted}) {
+  TaskDto copyWith({String? title, bool? isCompleted}) {
     return TaskDto(
       id: id,
       projectId: projectId,
-      title: title,
+      title: title ?? this.title,
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }

@@ -49,15 +49,66 @@ class FakeTasksRemoteDataSource {
   }
 
   Future<TaskDto> toggleTaskCompletion({required String taskId}) async {
-    final index = _tasks.indexWhere((task) => task.id == taskId);
-    if (index == -1) {
-      throw const RemoteException(message: 'Task is unavailable.');
-    }
-
+    final index = _indexOf(taskId);
     final updatedTask = _tasks[index].copyWith(
       isCompleted: !_tasks[index].isCompleted,
     );
     _tasks[index] = updatedTask;
     return updatedTask;
+  }
+
+  Future<TaskDto> createTask({
+    required String projectId,
+    required String title,
+  }) async {
+    final task = TaskDto(
+      id: _uniqueIdFor(title),
+      projectId: projectId,
+      title: title,
+      isCompleted: false,
+    );
+    _tasks.add(task);
+    return task;
+  }
+
+  Future<TaskDto> updateTask({
+    required String taskId,
+    required String title,
+  }) async {
+    final index = _indexOf(taskId);
+    final updatedTask = _tasks[index].copyWith(title: title);
+    _tasks[index] = updatedTask;
+    return updatedTask;
+  }
+
+  Future<void> deleteTask({required String taskId}) async {
+    _tasks.removeAt(_indexOf(taskId));
+  }
+
+  int _indexOf(String taskId) {
+    final index = _tasks.indexWhere((task) => task.id == taskId);
+    if (index == -1) {
+      throw const RemoteException(message: 'Task is unavailable.');
+    }
+
+    return index;
+  }
+
+  String _uniqueIdFor(String title) {
+    final slug = title
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+        .replaceAll(RegExp(r'^-+|-+$'), '');
+    final base = slug.isEmpty ? 'task' : slug;
+
+    var candidate = base;
+    var suffix = 2;
+    while (_tasks.any((task) => task.id == candidate)) {
+      candidate = '$base-$suffix';
+      suffix += 1;
+    }
+
+    return candidate;
   }
 }

@@ -3,7 +3,10 @@ import 'package:flutter_clean_architecture_starter/features/projects/data/dataso
 import 'package:flutter_clean_architecture_starter/features/projects/data/dtos/project_dto.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/data/repositories/projects_repository_impl.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/domain/entities/project.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/create_project.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/delete_project.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/load_projects.dart';
+import 'package:flutter_clean_architecture_starter/features/projects/domain/use_cases/update_project.dart';
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/bloc/projects_bloc.dart';
 
 void main() {
@@ -18,7 +21,7 @@ void main() {
         ),
       );
 
-      return ProjectsBloc(loadProjects: LoadProjects(repository));
+      return _buildBloc(repository);
     },
     act: (bloc) => bloc.add(const ProjectsLoadRequested()),
     expect: () => [
@@ -36,7 +39,7 @@ void main() {
         remoteDataSource: FakeProjectsRemoteDataSource(projects: []),
       );
 
-      return ProjectsBloc(loadProjects: LoadProjects(repository));
+      return _buildBloc(repository);
     },
     act: (bloc) => bloc.add(const ProjectsLoadRequested()),
     expect: () => [const ProjectsState.loading(), const ProjectsState.empty()],
@@ -49,12 +52,79 @@ void main() {
         remoteDataSource: FakeProjectsRemoteDataSource.unavailable(),
       );
 
-      return ProjectsBloc(loadProjects: LoadProjects(repository));
+      return _buildBloc(repository);
     },
     act: (bloc) => bloc.add(const ProjectsLoadRequested()),
     expect: () => [
       const ProjectsState.loading(),
       const ProjectsState.failure(message: 'Projects source is unavailable.'),
     ],
+  );
+
+  blocTest<ProjectsBloc, ProjectsState>(
+    'adds a created Project to the visible list',
+    build: () => _buildBloc(
+      ProjectsRepositoryImpl(
+        remoteDataSource: FakeProjectsRemoteDataSource(projects: []),
+      ),
+    ),
+    seed: () => const ProjectsState.empty(),
+    act: (bloc) => bloc.add(const ProjectsCreateRequested(name: 'Mobile App')),
+    expect: () => [
+      const ProjectsState.loaded(
+        projects: [Project(id: 'mobile-app', name: 'Mobile App')],
+      ),
+    ],
+  );
+
+  blocTest<ProjectsBloc, ProjectsState>(
+    'updates a visible Project',
+    build: () => _buildBloc(
+      ProjectsRepositoryImpl(
+        remoteDataSource: FakeProjectsRemoteDataSource(
+          projects: [ProjectDto(id: 'mobile-app', name: 'Mobile App')],
+        ),
+      ),
+    ),
+    seed: () => const ProjectsState.loaded(
+      projects: [Project(id: 'mobile-app', name: 'Mobile App')],
+    ),
+    act: (bloc) => bloc.add(
+      const ProjectsUpdateRequested(
+        projectId: 'mobile-app',
+        name: 'Mobile App v2',
+      ),
+    ),
+    expect: () => [
+      const ProjectsState.loaded(
+        projects: [Project(id: 'mobile-app', name: 'Mobile App v2')],
+      ),
+    ],
+  );
+
+  blocTest<ProjectsBloc, ProjectsState>(
+    'deletes a visible Project',
+    build: () => _buildBloc(
+      ProjectsRepositoryImpl(
+        remoteDataSource: FakeProjectsRemoteDataSource(
+          projects: [ProjectDto(id: 'mobile-app', name: 'Mobile App')],
+        ),
+      ),
+    ),
+    seed: () => const ProjectsState.loaded(
+      projects: [Project(id: 'mobile-app', name: 'Mobile App')],
+    ),
+    act: (bloc) =>
+        bloc.add(const ProjectsDeleteRequested(projectId: 'mobile-app')),
+    expect: () => [const ProjectsState.empty()],
+  );
+}
+
+ProjectsBloc _buildBloc(ProjectsRepositoryImpl repository) {
+  return ProjectsBloc(
+    loadProjects: LoadProjects(repository),
+    createProject: CreateProject(repository),
+    updateProject: UpdateProject(repository),
+    deleteProject: DeleteProject(repository),
   );
 }

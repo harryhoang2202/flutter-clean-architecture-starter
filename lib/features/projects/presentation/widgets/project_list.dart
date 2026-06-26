@@ -3,9 +3,16 @@ import 'package:flutter_clean_architecture_starter/features/projects/domain/enti
 import 'package:flutter_clean_architecture_starter/features/projects/presentation/widgets/project_list_item.dart';
 
 class ProjectList extends StatelessWidget {
-  const ProjectList({required this.projects, super.key});
+  const ProjectList({
+    required this.projects,
+    required this.onEdit,
+    required this.onDelete,
+    super.key,
+  });
 
   final List<Project> projects;
+  final ValueChanged<Project> onEdit;
+  final ValueChanged<Project> onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +20,11 @@ class ProjectList extends StatelessWidget {
       itemCount: projects.length,
       separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
-        return ProjectListItem(project: projects[index]);
+        return ProjectListItem(
+          project: projects[index],
+          onEdit: () => onEdit(projects[index]),
+          onDelete: () => onDelete(projects[index]),
+        );
       },
     );
   }
