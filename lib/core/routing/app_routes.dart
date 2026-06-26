@@ -3,4 +3,6 @@ class AppRoutes {
 
   static const authentication = '/authentication';
   static const projects = '/projects';
+
+  static String projectDetail(String projectId) => '/projects/$projectId';
 }
