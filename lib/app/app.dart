@@ -1,28 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
+import 'package:flutter_clean_architecture_starter/core/routing/app_router.dart';
+import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 void runStarterApp(AppConfig config) {
   runApp(StarterApp(config: config));
 }
 
-class StarterApp extends StatelessWidget {
-  const StarterApp({required this.config, super.key});
+class StarterApp extends StatefulWidget {
+  const StarterApp({
+    required this.config,
+    this.initialLocation,
+    this.sessionDataSource,
+    super.key,
+  });
 
   final AppConfig config;
+  final String? initialLocation;
+  final FakeSessionDataSource? sessionDataSource;
+
+  @override
+  State<StarterApp> createState() => _StarterAppState();
+}
+
+class _StarterAppState extends State<StarterApp> {
+  late final FakeSessionDataSource _sessionDataSource;
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _sessionDataSource =
+        widget.sessionDataSource ?? FakeSessionDataSource.unauthenticated();
+    _router = createAppRouter(
+      sessionDataSource: _sessionDataSource,
+      initialLocation: widget.initialLocation,
+    );
+  }
+
+  @override
+  void dispose() {
+    _router.dispose();
+    if (widget.sessionDataSource == null) {
+      _sessionDataSource.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: config.appName,
-      debugShowCheckedModeBanner: config.isDev,
+    return MaterialApp.router(
+      title: widget.config.appName,
+      debugShowCheckedModeBanner: widget.config.isDev,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
         useMaterial3: true,
       ),
-      home: StarterHomePage(config: config),
+      routerConfig: _router,
     );
   }
 }
