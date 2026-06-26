@@ -1,0 +1,21 @@
+{
+  "@@locale": "en",
+  "appTitle": "Flutter Clean Architecture Starter",
+  "@appTitle": {
+    "description": "Application title."
+  },
+  "referenceStarterSubtitle": "Project Management Reference Starter",
+  "@referenceStarterSubtitle": {
+    "description": "Short subtitle for the starter shell."
+  },
+  "sliceZeroStatus": "Slice 0 is running in {environment} mode.",
+  "@sliceZeroStatus": {
+    "description": "Status text shown by the starter shell before feature slices are implemented.",
+    "placeholders": {
+      "environment": {
+        "type": "String",
+        "example": "dev"
+      }
+    }
+  }
+}
