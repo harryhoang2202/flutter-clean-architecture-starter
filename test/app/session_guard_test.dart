@@ -8,7 +8,7 @@ void main() {
     'unauthenticated Session cannot access Projects and is sent to Authentication',
     (tester) async {
       await tester.pumpWidget(
-        const StarterApp(
+        StarterApp(
           config: AppConfig(
             environment: AppEnvironment.dev,
             appName: 'Flutter Clean Architecture Starter',

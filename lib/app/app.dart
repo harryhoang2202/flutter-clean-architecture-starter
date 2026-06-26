@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
-import 'package:flutter_clean_architecture_starter/core/routing/app_router.dart';
+import 'package:flutter_clean_architecture_starter/core/di/injection.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 void runStarterApp(AppConfig config) {
@@ -10,14 +13,38 @@ void runStarterApp(AppConfig config) {
 }
 
 class StarterApp extends StatefulWidget {
-  const StarterApp({
-    required this.config,
-    this.initialLocation,
-    this.sessionDataSource,
-    super.key,
-  });
+  factory StarterApp({
+    required AppConfig config,
+    String? initialLocation,
+    FakeSessionDataSource? sessionDataSource,
+    Key? key,
+  }) {
+    final dependencies = GetIt.asNewInstance();
+    configureDependencies(
+      instance: dependencies,
+      config: config,
+      initialLocation: initialLocation,
+      sessionDataSource: sessionDataSource,
+    );
 
-  final AppConfig config;
+    return StarterApp.withDependencies(
+      dependencies: dependencies,
+      disposeDependencies: true,
+      key: key,
+    );
+  }
+
+  const StarterApp.withDependencies({
+    required this.dependencies,
+    this.disposeDependencies = false,
+    super.key,
+  }) : config = null,
+       initialLocation = null,
+       sessionDataSource = null;
+
+  final GetIt dependencies;
+  final bool disposeDependencies;
+  final AppConfig? config;
   final String? initialLocation;
   final FakeSessionDataSource? sessionDataSource;
 
@@ -26,34 +53,29 @@ class StarterApp extends StatefulWidget {
 }
 
 class _StarterAppState extends State<StarterApp> {
-  late final FakeSessionDataSource _sessionDataSource;
   late final GoRouter _router;
 
   @override
   void initState() {
     super.initState();
-    _sessionDataSource =
-        widget.sessionDataSource ?? FakeSessionDataSource.unauthenticated();
-    _router = createAppRouter(
-      sessionDataSource: _sessionDataSource,
-      initialLocation: widget.initialLocation,
-    );
+    _router = widget.dependencies<GoRouter>();
   }
 
   @override
   void dispose() {
-    _router.dispose();
-    if (widget.sessionDataSource == null) {
-      _sessionDataSource.dispose();
+    if (widget.disposeDependencies) {
+      unawaited(widget.dependencies.reset());
     }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final config = widget.dependencies<AppConfig>();
+
     return MaterialApp.router(
-      title: widget.config.appName,
-      debugShowCheckedModeBanner: widget.config.isDev,
+      title: config.appName,
+      debugShowCheckedModeBanner: config.isDev,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(

@@ -9,7 +9,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const StarterApp(
+      StarterApp(
         config: AppConfig(
           environment: AppEnvironment.dev,
           appName: 'Flutter Clean Architecture Starter',

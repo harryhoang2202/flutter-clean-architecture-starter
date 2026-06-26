@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('starter shell describes the reference app', (tester) async {
     await tester.pumpWidget(
-      const StarterApp(
+      StarterApp(
         config: AppConfig(
           environment: AppEnvironment.dev,
           appName: 'Flutter Clean Architecture Starter',
