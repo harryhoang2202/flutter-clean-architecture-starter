@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_clean_architecture_starter/app/app.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_environment.dart';
+import 'package:flutter_clean_architecture_starter/core/di/app_dependencies.dart';
 import 'package:flutter_clean_architecture_starter/core/di/injection.dart';
 import 'package:flutter_clean_architecture_starter/core/routing/app_routes.dart';
 import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
@@ -24,7 +25,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      StarterApp.withDependencies(dependencies: dependencies),
+      StarterApp(dependencies: AppDependencies.fromGetIt(dependencies)),
     );
     await tester.pumpAndSettle();
 
@@ -46,7 +47,7 @@ void main() {
     );
 
     await tester.pumpWidget(
-      StarterApp.withDependencies(dependencies: dependencies),
+      StarterApp(dependencies: AppDependencies.fromGetIt(dependencies)),
     );
     await tester.pumpAndSettle();
 

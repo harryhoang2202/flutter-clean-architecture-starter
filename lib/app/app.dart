@@ -2,53 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture_starter/core/config/app_config.dart';
-import 'package:flutter_clean_architecture_starter/core/di/injection.dart';
+import 'package:flutter_clean_architecture_starter/core/di/app_dependencies.dart';
 import 'package:flutter_clean_architecture_starter/core/layout/responsive_constraints.dart';
 import 'package:flutter_clean_architecture_starter/core/theme/app_theme.dart';
-import 'package:flutter_clean_architecture_starter/features/auth/data/datasources/fake_session_data_source.dart';
 import 'package:flutter_clean_architecture_starter/l10n/generated/app_localizations.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 void runStarterApp(AppConfig config) {
-  runApp(StarterApp(config: config));
+  runApp(StarterApp(dependencies: AppDependencies.create(config: config)));
 }
 
 class StarterApp extends StatefulWidget {
-  factory StarterApp({
-    required AppConfig config,
-    String? initialLocation,
-    FakeSessionDataSource? sessionDataSource,
-    Key? key,
-  }) {
-    final dependencies = GetIt.asNewInstance();
-    configureDependencies(
-      instance: dependencies,
-      config: config,
-      initialLocation: initialLocation,
-      sessionDataSource: sessionDataSource,
-    );
+  const StarterApp({required this.dependencies, super.key});
 
-    return StarterApp.withDependencies(
-      dependencies: dependencies,
-      disposeDependencies: true,
-      key: key,
-    );
-  }
-
-  const StarterApp.withDependencies({
-    required this.dependencies,
-    this.disposeDependencies = false,
-    super.key,
-  }) : config = null,
-       initialLocation = null,
-       sessionDataSource = null;
-
-  final GetIt dependencies;
-  final bool disposeDependencies;
-  final AppConfig? config;
-  final String? initialLocation;
-  final FakeSessionDataSource? sessionDataSource;
+  final AppDependencies dependencies;
 
   @override
   State<StarterApp> createState() => _StarterAppState();
@@ -60,20 +27,18 @@ class _StarterAppState extends State<StarterApp> {
   @override
   void initState() {
     super.initState();
-    _router = widget.dependencies<GoRouter>();
+    _router = widget.dependencies.router;
   }
 
   @override
   void dispose() {
-    if (widget.disposeDependencies) {
-      unawaited(widget.dependencies.reset());
-    }
+    unawaited(widget.dependencies.dispose());
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final config = widget.dependencies<AppConfig>();
+    final config = widget.dependencies.config;
 
     return MaterialApp.router(
       title: config.appName,
